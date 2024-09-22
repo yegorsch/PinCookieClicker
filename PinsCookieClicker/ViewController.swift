@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GameplayKit
 
 class ViewController: UIViewController {
 
@@ -32,6 +33,8 @@ class ViewController: UIViewController {
             counterLabel.text = count.description
         }
     }
+
+    private let distribution = GKGaussianDistribution(lowestValue: 1, highestValue: 6)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,13 +64,13 @@ class ViewController: UIViewController {
     }
 
     @objc private func cookieTapped(gestureRecognizer: UITapGestureRecognizer) {
-        let location = gestureRecognizer.location(in: view)
-        addFloater(at: location)
-        count += 1
-        cookieView.layer.add(pulsateAnimation(), forKey: nil)
+        let cookieIncrease = distribution.nextInt()
+        addFloater(at: gestureRecognizer.location(in: view), value: cookieIncrease)
+        cookieView.layer.add(createPulseAnimation(), forKey: nil)
+        count += cookieIncrease
     }
 
-    func pulsateAnimation() -> CABasicAnimation {
+    func createPulseAnimation() -> CABasicAnimation {
         let pulse = CABasicAnimation(keyPath: "transform.scale")
         pulse.duration = 0.1
         pulse.fromValue = 1.0
@@ -77,10 +80,10 @@ class ViewController: UIViewController {
         return pulse
     }
 
-    func addFloater(at point: CGPoint) {
+    func addFloater(at point: CGPoint, value: Int) {
         let label = UILabel()
-        label.text = "+1"
-        label.font = .boldSystemFont(ofSize: 36)
+        label.text = "+\(value)"
+        label.font = .boldSystemFont(ofSize: 30.0 + CGFloat(value * value))
         label.textColor = .white
         label.sizeToFit()
         label.center = point
@@ -94,3 +97,10 @@ class ViewController: UIViewController {
     }
 }
 
+/*
+More ideas:
+    1. Random bonuses (e.g. random +10 or randomly increase cookies per click)
+    2. Play a sound on tap
+    3. Send a scheduled notification to visit an app
+    4. Add haptics and run on a real phone
+*/
