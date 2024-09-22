@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  PinsCookieClicker
 //
-//  Created by Егор on 22.09.2024.
+//  Created by Yegor on 22.09.2024.
 //
 
 import UIKit
